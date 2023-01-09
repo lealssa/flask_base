@@ -1,0 +1,9 @@
+Flask
+Flask-Pydantic
+pydantic[email]
+Flask-Login
+python-dotenv
+babel
+redbird
+pymongo[srv]
+bcrypt

@@ -1,0 +1,4 @@
+.is-hcentered-tile {
+    display: flex;
+    align-items: center!important;
+  }

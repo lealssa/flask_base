@@ -1,0 +1,90 @@
+{% extends 'base.html' %} {% block title%}Login{% endblock %} {% block content
+%}
+
+<div class="tile is-parent is-vertical">
+  <article class="tile is-child has-text-centered box">
+    <h1 class="title has-text-grey">Faça login para acessar seu dashboard</h1>
+    <h1 class="subtitle has-text-grey">
+      Inclua, altere e remova despesas, proventos e investimentos...
+    </h1>
+  </article>
+  <!-- <article class="tile is-child">
+    <figure class="image is-128x128">
+      <img src="{{ url_for('static', filename='img/Men_invest_and_have_made_a_profit_generated.jpg') }}" class="is-rounded">
+    </figure>
+  </article> -->
+</div>
+<div class="tile is-parent is-4">
+  <div class="tile is-child box">
+    <div class="content block" x-data="validator">
+      {% if email_was_send %}
+      <article class="message is-primary">
+        <div class="message-body">
+          Um link para reset da senha foi enviado para o email cadastrado
+        </div>
+      </article>
+      <a class="button" href="{{ url_for('webui.user.login') }}">Voltar</a>
+      {% elif user_not_found %}
+      <article class="message is-warning">
+        <div class="message-body">
+          Email não cadastrado!
+          <p>
+            <a href="{{ url_for('webui.user.register') }}">Clique aqui</a> para fazer
+            um novo cadastro
+          </p>
+        </div>
+      </article>
+      {% else %}
+      <form
+        action="{{ url_for('webui.user.recover') }}"
+        method="post"
+        @submit.prevent="submit"
+      >
+        <div class="field">
+          <label class="label">Digite seu email</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder=""
+              name="email"
+              x-model="email.data"
+              :class="email.errored && 'is-danger'"
+              @blur="blur"
+              data-rules='["email"]'
+            />
+          </div>
+          <p
+            class="help is-danger"
+            x-show="email.errored"
+            x-text="email.helperMessage"
+          ></p>
+        </div>
+        <div class="field">
+          <div class="control">
+            <button class="button is-link">Enviar</button>
+            <a class="button" href="{{ url_for('webui.user.login') }}">Voltar</a>
+          </div>
+        </div>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+  const localData = {
+    email: {
+      data: "",
+      errored: false,
+      helperMessage: "Digite um email válido",
+    },
+  };
+
+  const alpineData = { ...alpineObjectBase, ...localData };
+
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("validator", () => alpineData);
+  });
+</script>
+
+{% endblock %}

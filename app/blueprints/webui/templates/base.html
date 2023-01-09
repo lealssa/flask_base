@@ -1,0 +1,95 @@
+{% from 'helpers/_flash_messages.html' import flash_messages with context %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/site.css')}}"
+    />
+    <script>
+      const alpineObjectBase = {
+        hasError: false,
+        blur(event) {
+          this.validate(event.target);
+        },
+        validate(element) {
+          field = this[element.name];
+          let rules = JSON.parse(element.dataset.rules);
+
+          field.errored = !Iodine.assert(field.data, rules).valid;
+          this.hasError = field.errored;
+        },
+        submit(e) {
+          let inputs = [...this.$el.querySelectorAll("input[data-rules]")];
+          inputs.map((input) => {
+            this.validate(input);
+          });
+
+          if (this.hasError) return;
+
+          e.target.submit();
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <section class="hero is-fullheight">
+      {% if current_user.is_authenticated %}
+      <div class="hero-head box">        
+        <header class="navbar">
+          <div class="container">
+            <div class="navbar-brand">
+              <a class="navbar-item">
+                <img
+                  alt="Logo"
+                  src="{{ url_for('static', filename='img/Men_invest_and_have_made_a_profit_generated.jpg')}}"
+                />
+              </a>
+              <a href="{{ url_for('webui.index')}}" class="navbar-item">Home</a>
+              <span class="navbar-burger" data-target="navbarMenuHeroC">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </div>
+            <div class="navbar-menu">
+              <div class="navbar-end">
+                <a href="{{ url_for('webui.user.logout')}}" class="navbar-item">Sair</a>
+              </div>
+            </div>
+          </div>
+        </header>        
+      </div>
+      {% endif %}
+      <div class="hero-body">
+        <div class="tile is-ancestor is-vertical">
+          <div class="tile is-parent">
+            <div class="tile is-child">
+              <div class="content">{{ flash_messages() }}</div>
+            </div>
+          </div>
+          <div class="tile">{% block content %}{% endblock %}</div>
+        </div>
+      </div>
+      <div class="hero-footer">
+        <footer class="footer">
+          <div class="content has-text-centered">
+            <p>Flask + Pydantic + Redbird + AlpineJS + Bulma</p>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </body>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@kingshott/iodine@8.1.0/dist/iodine.min.umd.js"
+    defer
+  ></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</html>

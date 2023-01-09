@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% block title%}Home{% endblock %}
+{% block content %}
+<div class="tile is-parent">
+  <div class="tile is-child">
+    <h1 class="subtitle has-text-centered">
+      Sem bem-vindo <strong>{{ current_user.first_name }}</strong>
+    </h1>
+  </div>
+</div>
+{% endblock %}

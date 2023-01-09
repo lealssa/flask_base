@@ -1,0 +1,113 @@
+{% extends 'base.html' %} {% block title%}Login{% endblock %} {% block content
+%}
+
+<div class="tile is-parent is-vertical">
+  <article class="tile is-child has-text-centered box">
+    <h1 class="title has-text-grey">Faça login para acessar seu dashboard</h1>
+    <h1 class="subtitle has-text-grey">
+      Inclua, altere e remova despesas, proventos e investimentos...
+    </h1>
+  </article>
+  <!-- <article class="tile is-child">
+    <figure class="image is-128x128">
+      <img src="{{ url_for('static', filename='img/Men_invest_and_have_made_a_profit_generated.jpg') }}" class="is-rounded">
+    </figure>
+  </article> -->
+</div>
+<div class="tile is-parent is-4">
+  <div class="tile is-child box">
+    <div class="content block" x-data="validator">
+      <form
+        action="{{ url_for('webui.user.login') }}"
+        method="post"
+        @submit.prevent="submit"
+      >
+        <div class="field">
+          <label class="label">Usuário</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder=""
+              name="login"
+              x-model="login.data"
+              :class="login.errored && 'is-danger'"
+              data-rules='["required","string","minLength:6"]'
+              @blur="blur"
+            />
+            <p
+              class="help is-danger"
+              x-show="login.errored"
+              x-text="login.helperMessage"
+            ></p>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Senha</label>
+          <div class="control">
+            <input
+              class="input"
+              type="password"
+              placeholder=""
+              name="password"
+              @blur="blur"
+              x-model="password.data"
+              :class="password.errored && 'is-danger'"
+              data-rules='["required","string","minLength:6"]'
+            />
+            <p
+              class="help is-danger"
+              x-show="password.errored"
+              x-text="password.helperMessage"
+            ></p>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <button class="button is-link">Login</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <p>
+              <a href="{{ url_for('webui.user.recover') }}"
+                >Esqueci meu usuário e/ou senha</a
+              >
+            </p>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <p>
+              <a class="button" href="{{ url_for('webui.user.register') }}"
+                >Cadastrar usuário</a
+              >
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  const localData = {
+    login: {
+      data: "",
+      errored: false,
+      helperMessage: "Informe seu login ou email",
+    },
+    password: {
+      data: "",
+      errored: false,
+      helperMessage: "Informe sua senha",
+    }
+  };
+
+  const alpineData = { ...alpineObjectBase, ...localData };
+
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("validator", () => alpineData);
+  });
+</script>
+
+{% endblock %}

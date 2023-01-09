@@ -1,0 +1,201 @@
+{% extends 'base.html' %} {% block title%}Register{% endblock %} {% block
+content %}
+<div class="tile is-parent is-vertical">
+  <article class="tile is-child has-text-centered box">
+    <h1 class="title has-text-grey">Faça login para acessar seu dashboard</h1>
+    <h1 class="subtitle has-text-grey">
+      Inclua, altere e remova despesas, proventos e investimentos...
+    </h1>
+  </article>
+  <!-- <article class="tile is-child">
+      <figure class="image is-128x128">
+        <img src="{{ url_for('static', filename='img/Men_invest_and_have_made_a_profit_generated.jpg') }}" class="is-rounded">
+      </figure>
+    </article> -->
+</div>
+<div class="tile is-parent is-4">
+  <div class="tile is-child box">
+    <div class="content block" x-data="validator">
+      <!-- Check if user has created -->
+      {% if user_created %}
+      <article class="message is-success">
+        <div class="message-body">
+          Usuário cadastrado com sucesso!
+          <p>
+            <a href="{{ url_for('webui.user.login') }}">Clique aqui</a> para fazer
+            login
+          </p>
+        </div>
+      </article>
+      <!-- Check user exists -->
+      {% elif user_exists %}
+      <article class="message is-warning">
+        <div class="message-body">
+          Usuário já existe!
+          <p>
+            <a href="{{ url_for('webui.user.login') }}">Clique aqui</a> fazer login
+            ou <a href="{{ url_for('webui.user.recover') }}">recupere a senha</a>
+          </p>
+        </div>
+      </article>
+      <!-- Show fields, otherwise -->
+      {% else %}
+      <form
+        action="{{ url_for('webui.user.register') }}"
+        method="post"
+        @submit.prevent="submit"
+      >
+        <div class="field">
+          <label class="label">Nome</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder=""
+              name="first_name"
+              x-model="first_name.data"
+              @blur="blur"
+              :class="first_name.errored && 'is-danger'"
+              data-rules='["required","string"]'
+            />
+            <p
+              class="help is-danger"
+              x-show="first_name.errored"
+              x-text="first_name.helperMessage"
+            ></p>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Sobrenome</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder=""
+              name="last_name"
+              x-model="last_name.data"
+              @blur="blur"
+              :class="last_name.errored && 'is-danger'"
+              data-rules='["required","string"]'
+            />
+            <p
+              class="help is-danger"
+              x-show="last_name.errored"
+              x-text="last_name.helperMessage"
+            ></p>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder=""
+              name="email"
+              x-model="email.data"
+              @blur="blur"
+              :class="email.errored && 'is-danger'"
+              data-rules='["required","email"]'
+            />
+            <p
+              class="help is-danger"
+              x-show="email.errored"
+              x-text="email.helperMessage"
+            ></p>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Senha</label>
+          <div class="control">
+            <input
+              class="input"
+              type="password"
+              placeholder=""
+              name="password"
+              x-model="password.data"
+              @blur="blur"
+              :class="password.errored && 'is-danger'"
+              data-rules='["required","string","minLength:6"]'
+            />
+            <p
+              class="help is-danger"
+              x-show="password.errored"
+              x-text="password.helperMessage"
+            ></p>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Repita a senha</label>
+          <div class="control">
+            <input
+              class="input"
+              type="password"
+              placeholder=""
+              name="confirm_password"
+              x-model="confirm_password.data"
+              @blur="blur"
+              :class="confirm_password.errored && 'is-danger'"
+              data-rules='["required","string","minLength:6"]'
+            />
+            <p
+              class="help is-danger"
+              x-show="confirm_password.errored"
+              x-text="confirm_password.helperMessage"
+            ></p>
+          </div>
+        </div>
+        <div class="control">
+          <button class="button is-link">Cadastrar</button>
+          <a class="button" href="{{ url_for('webui.user.login') }}">Voltar</a>
+        </div>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+  const localData = {
+    first_name: { data: "", errored: false, helperMessage: "Informe seu nome" },
+    last_name: {
+      data: "",
+      errored: false,
+      helperMessage: "Informe seu sobrenome",
+    },
+    email: { data: "", errored: false, helperMessage: "Informe seu email" },
+    password: {
+      data: "",
+      errored: false,
+      helperMessage: "A senha precisa ter 6 ou mais caracteres",
+    },
+    confirm_password: {
+      data: "",
+      errored: false,
+      helperMessage: "As senhas não são iguais",
+    },
+    submit(e) {
+      let inputs = [...this.$el.querySelectorAll("input[data-rules]")];
+      inputs.map((input) => {
+        this.validate(input);
+      });
+
+      if (this.hasError) return;
+
+      if (this.password.data !== this.confirm_password.data) {
+        msg = "As senhas não são iguais";
+        this.confirm_password.errored = true;
+        this.confirm_password.helperMessage = msg;
+        return;
+      }
+
+      e.target.submit();
+    },
+  };
+
+  const alpineData = { ...alpineObjectBase, ...localData };
+
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("validator", () => alpineData);
+  });
+</script>
+{% endblock %}
